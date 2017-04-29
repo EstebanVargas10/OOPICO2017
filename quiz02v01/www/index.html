@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quiz 02</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
+
+    <style>
+        @-ms-viewport {
+            width: 100vw;
+            min-zoom: 100%;
+            zoom: 100%;
+        }
+        
+        @viewport {
+            width: 100vw;
+            min-zoom: 100% zoom: 100%;
+        }
+        
+        @-ms-viewport {
+            user-zoom: fixed;
+            min-zoom: 100%;
+        }
+        
+        @viewport {
+            user-zoom: fixed;
+            min-zoom: 100%;
+        }
+        
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
+        body {
+            box-sizing: 5px;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        input {
+            border: 2px solid black;
+            text-decoration-color: green;
+            font-family: 'Open Sans', sans-serif;
+            color: black;
+        }
+        
+        #ratefeld {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 2.0em;
+        }
+        
+        h1 {
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
+
+    <link rel="stylesheet" href="css/app.css">
+
+
+    <script src="cordova.js" id="xdkJScordova_"></script>
+
+    <script src="js/app.js"></script>
+
+    <script src="js/init-app.js"></script>
+
+    <script src="xdk/init-dev.js"></script>
+
+    <script>
+        var lsgwoerter = [
+
+            ["C", "O", "M", "P", "U", "T", "A", "D", "O", "R", "A"],
+            ["N", "E", "T", "F", "L", "I", "X"],
+            ["G", "I", "T", "H", "U", "B"],
+            ["A", "N", "G", "U", "L", "A", "R"],
+            ["R", "I", "C", "K", "S", "A", "N", "C", "H", "E", "Z"],
+            ["H", "E", "L", "A", "D", "O"]
+
+]
+        var random = Math.floor((Math.random() * (lsgwoerter.length - 1)));
+
+        var lsgwort = lsgwoerter[random]; // the word to guess will be chosen from the array above
+        var ratewort = new Array(lsgwort.length);
+        var fehler = 0;
+
+        // every letter in the word is symbolized by an underscore in the guessfield
+        for (var i = 0; i < ratewort.length; i++) {
+            ratewort[i] = "_ ";
+        }
+
+        // prints the guessfield
+        function printRatewort() {
+            for (var i = 0; i < ratewort.length; i++) {
+                var ratefeld = document.getElementById("ratefeld");
+                var buchstabe = document.createTextNode(ratewort[i]);
+                ratefeld.appendChild(buchstabe);
+            }
+        }
+
+        //checks if the the letter provided by the user matches one or more of the letters in the word
+        var pruefeZeichen = function () {
+            var f = document.rateformular;
+            var b = f.elements["ratezeichen"];
+            var zeichen = b.value; // the letter provided by the user
+            zeichen = zeichen.toUpperCase();
+            for (var i = 0; i < lsgwort.length; i++) {
+                if (lsgwort[i] === zeichen) {
+                    ratewort[i] = zeichen + " ";
+                    var treffer = true;
+                }
+                b.value = "";
+            }
+
+            //deletes the guessfield and replaces it with the new one
+            var ratefeld = document.getElementById("ratefeld");
+            ratefeld.innerHTML = "";
+            printRatewort();
+
+            // if a guessed letter is not in the word, the letter will be put on the "wrong letters"-list and hangman grows
+            if (!treffer) {
+                var gerateneBuchstaben = document.getElementById("gerateneBuchstaben");
+                var buchstabe = document.createTextNode(" " + zeichen);
+                gerateneBuchstaben.appendChild(buchstabe);
+                fehler++;
+                var hangman = document.getElementById("hangman");
+                hangman.src = "http://www.writteninpencil.de/Projekte/Hangman/hangman" + fehler + ".png";
+            }
+
+            //checks if all letters have been found
+            var fertig = true;
+            for (var i = 0; i < ratewort.length; i++) {
+                if (ratewort[i] === "_ ") {
+                    fertig = false;
+                }
+            }
+            if (fertig) {
+                window.alert(":D Ganaste!");
+            }
+
+            //once you got six wrong letters, you lose
+            if (fehler === 6) {
+                window.alert(" :'( RIP ????-2017  ");
+            }
+        }
+
+        function init() {
+            printRatewort();
+        }
+
+        window.onload = init;
+    </script>
+
+</head>
+
+
+<body>
+
+    <h1>Ahorcado 2017 <br> </h1>
+    <p id="ratefeld"></p>
+    <form name="rateformular">
+        <input name="ratezeichen" type="text" size="5" maxlength="1">
+        <input name="ratebutton" type="button" value="Adivinar" onClick="pruefeZeichen()">
+
+        <p id="gerateneBuchstaben">Letras Incorrectas:</p>
+        <img src="http://www.writteninpencil.de/Projekte/Hangman/hangman0.png" id="hangman">
+        <br />
+        <input name="refresh" type="button" value="Iniciar otro juego" onClick="location.reload()">
+    </form>
+
+
+</body>
+
+</html>
